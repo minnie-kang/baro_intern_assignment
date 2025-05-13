@@ -26,6 +26,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
+    "drf_spectacular",
 ]
 
 LOCAL_APPS = [
@@ -106,6 +107,26 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# Swagger Spectacular 설정 
+SPECTACULAR_SETTINGS = {
+    "TITLE": "baro_inturn API Document",
+    "DESCRIPTION": "drf-specatular 를 사용해서 만든 API 문서입니다.",
+    "SWAGGER_UI_SETTINGS": {
+        "dom_id": "#swagger-ui",
+        "layout": "BaseLayout",
+        "deepLinking": True,
+        "displayOperationId": True,
+        "filter": True,
+    },
+    "LICENSE": {
+        "name": "MIT License",
+    },
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_DIST": "//unpkg.com/swagger-ui-dist@3.38.0",
+}
+
+
 # rest_framework 설정
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
@@ -114,6 +135,7 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
+
 
 # JWT 설정
 SIMPLE_JWT = {
