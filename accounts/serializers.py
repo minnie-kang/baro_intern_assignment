@@ -1,7 +1,6 @@
 from django.contrib.auth import authenticate, get_user_model
-from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken
 
 User = get_user_model()
 
@@ -42,7 +41,7 @@ class LoginSerializer(serializers.Serializer):
                 }
             })
         
-        refresh = RefreshToken.for_user(user)
+        token = AccessToken.for_user(user)
         return {
-            "token": str(refresh.access_token)
+            "token": str(token)
         }
