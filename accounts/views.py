@@ -1,10 +1,12 @@
 from django.contrib.auth import get_user_model
 from rest_framework import generics, status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiResponse
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework import serializers
 
-from .serializers import RegisterSerializer, LoginSerializer
+from .serializers import RegisterSerializer, LoginSerializer, TokenVerifySerializer
 
 User = get_user_model()
 
@@ -38,7 +40,6 @@ class RegisterView(generics.CreateAPIView):
                 }
             )
         },
-        tags=["auth"]
     )
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
@@ -79,9 +80,52 @@ class LoginView(generics.GenericAPIView):
                 
             )
         },
-        tags=["auth"]
     )
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.validated_data)
+
+
+# 토큰 검증 view
+class TokenVerifyView(generics.GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = TokenVerifySerializer
+
+    @extend_schema(
+        summary="토큰 검증",
+        request=TokenVerifySerializer,
+        responses={
+            200: OpenApiResponse(
+                description="토큰이 유효한 경우",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "message": {"type": "string", "example": "유효한 토큰입니다."}
+                    }
+                }
+            ),
+            401: OpenApiResponse(
+                description="토큰이 유효하지 않은 경우",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "error": {
+                            "type": "object",
+                            "properties": {
+                                "code": {"type": "string"},
+                                "message": {"type": "string"}
+                            }
+                        }
+                    }
+                }
+            )
+        },
+    )
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            return Response({"message": "유효한 토큰입니다."}, status=status.HTTP_200_OK)
+        except serializers.ValidationError as e:
+            return Response(e.detail, status=status.HTTP_401_UNAUTHORIZED)
