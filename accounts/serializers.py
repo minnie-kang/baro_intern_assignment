@@ -4,9 +4,10 @@ from rest_framework_simplejwt.tokens import AccessToken
 import jwt
 from django.conf import settings
 
+
 User = get_user_model()
 
-# 회원가입 serializer
+
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -27,7 +28,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             "nickname": instance.nickname
         }
 
-# 로그인 serializer
+
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True, write_only=True)
@@ -50,7 +51,7 @@ class LoginSerializer(serializers.Serializer):
             "token": str(token)
         }
 
-# 토큰 검증 serializer
+
 class TokenVerifySerializer(serializers.Serializer):
     token = serializers.CharField(required=False, allow_blank=True, allow_null=True)
 

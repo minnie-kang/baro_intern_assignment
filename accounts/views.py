@@ -83,8 +83,11 @@ class LoginView(generics.GenericAPIView):
     )
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        return Response(serializer.validated_data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            return Response(serializer.validated_data, status=status.HTTP_200_OK)
+        except serializers.ValidationError as e:
+            return Response(e.detail, status=status.HTTP_401_UNAUTHORIZED)
 
 
 # 토큰 검증 view
