@@ -6,7 +6,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DJANGO_SECRET_KEY=django-insecure-dev-key-123
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-django-insecure-dev-key-123}
       - DB_NAME=${DB_NAME:-postgres}
       - DB_USER=${DB_USER:-postgres}
       - DB_PASSWORD=${DB_PASSWORD:-postgres}
